@@ -17,7 +17,6 @@ def main():
         warmup=True,         # Warmup common shapes
     )
     
-    # Download audio file from a URL (replace with actual URL later)
     import urllib.request
     audio_url = "https://storage.googleapis.com/voturn-sample-recordings/incomplete_number_sample.wav"  # TODO: Replace with actual hosted .wav URL
     audio_file = "incomplete_number_sample.wav"

@@ -91,7 +91,7 @@ Note: Sample rate is automatically detected from the audio file.
     )
     parser.add_argument(
         '--model',
-        default='vogent/turn-detector',
+        default='vogent/Vogent-Turn-80M',
         help='HuggingFace model name (default: vogent/Vogent-Turn-80M)'
     )
     parser.add_argument(

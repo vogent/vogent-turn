@@ -32,7 +32,6 @@ def main():
     print("Initializing Turn Detector...")
     detector = TurnDetector()
     
-    # TODO: Populate these URLs with your audio file locations
     audio_sources = [
         {
             "url": "https://storage.googleapis.com/voturn-sample-recordings/incomplete_number_sample.wav",  # TODO: Replace with actual URL

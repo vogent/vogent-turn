@@ -33,7 +33,7 @@ class TurnDetector:
     
     def __init__(
         self,
-        model_name="vogent/turn-detector",
+        model_name="vogent/Vogent-Turn-80M",
         revision=None,
         device=None,
         compile_model=True,
