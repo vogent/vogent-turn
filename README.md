@@ -25,20 +25,6 @@ The model projects audio embeddings into the LLM's input space and processes the
 
 ## Installation
 
-### From PyPI (coming soon)
-
-```bash
-pip install vogent-turn
-```
-
-### From Source (Traditional)
-
-```bash
-git clone https://github.com/vogent/vogent-turn.git
-cd vogent-turn
-pip install -e .
-```
-
 ### From Source (with UV - Recommended for Development)
 
 [UV](https://github.com/astral-sh/uv) is a fast Python package manager. If you have UV installed:
@@ -53,13 +39,8 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 uv pip install -e .
 ```
 
-See [UV_GUIDE.md](UV_GUIDE.md) for detailed UV usage instructions.
-
 ### Requirements
 
-- Python >=3.8
-- PyTorch >=2.1.0
-- Transformers >=4.35.0
 - See `pyproject.toml` for full list
 
 ---
@@ -238,14 +219,17 @@ Sample scripts can be found in the `examples/` directory.
 ### Project Structure
 
 ```
-vogent_turn/
-├── __init__.py              # Package exports
-├── inference.py             # Main TurnDetector class
-├── predict.py               # CLI tool
-├── smollm_whisper.py        # Model architecture
-├── whisper.py               # Whisper components
-├── requirements.txt         # Dependencies
-└── setup.py                 # Package configuration
+vogent-turn/                    # Project root
+├── pyproject.toml              # Package configuration and dependencies
+├── vogent_turn/                # Python package
+│   ├── __init__.py             # Package exports
+│   ├── inference.py            # Main TurnDetector class
+│   ├── predict.py              # CLI tool
+│   ├── smollm_whisper.py       # Model architecture
+│   └── whisper.py              # Whisper components
+└── examples/                   # Usage examples
+    ├── basic_usage.py
+    └── batch_processing.py
 ```
 
 ### Contributing
