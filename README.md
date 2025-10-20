@@ -167,7 +167,8 @@ For best performance, do not include terminal punctuation (periods, etc.).
 result = detector.predict(
     audio,
     prev_line="How are you doing today",
-    curr_line="I'm doing great thanks"
+    curr_line="I'm doing great thanks",
+    sample_rate=16000
 )
 ```
 
