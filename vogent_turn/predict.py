@@ -100,9 +100,9 @@ Note: Sample rate is automatically detected from the audio file.
         help='Model revision (default: from TURN_DETECTOR_REVISION env var)'
     )
     parser.add_argument(
-        '--no-compile',
+        '--compile',
         action='store_true',
-        help='Disable torch.compile (faster startup, slower inference)'
+        help='Enable torch.compile (slower startup, faster inference)'
     )
     parser.add_argument(
         '--no-warmup',
@@ -129,7 +129,7 @@ Note: Sample rate is automatically detected from the audio file.
         model_name=args.model,
         revision=args.revision,
         device=device,
-        compile_model=not args.no_compile,
+        compile_model=args.compile,
         warmup=not args.no_warmup,
     )
     
