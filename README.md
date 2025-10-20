@@ -208,8 +208,8 @@ The model is trained on conversational audio with labeled turn boundaries. It le
 ## Examples
 
 Sample scripts can be found in the `examples/` directory. 
-`python3.10 examples/basic_usage.py` downloads an audio file and runs the turn detector. 
-`python3.10 examples/batch_processing.py` downloads two audio files and runs the turn detector with a batched input.
+`python examples/basic_usage.py` downloads an audio file and runs the turn detector. 
+`python examples/batch_processing.py` downloads two audio files and runs the turn detector with a batched input.
 `request_batcher.py` is a sample implementation of a thread for continuous receiving and batching of requests (e.g. in a production setting).
 
 ---
