@@ -109,14 +109,16 @@ Detect if the current speaker has finished their turn.
 ```python
 result = detector.predict(
     audio,                    # np.ndarray: (n_samples,) mono float32
-    prev_line="",             # str: Previous speaker's text (optional)
-    curr_line="",             # str: Current speaker's text (optional)
+    prev_line="",             # str: Previous speaker's text (required)
+    curr_line="",             # str: Current speaker's text (required)
     sample_rate=None,         # int: Sample rate in Hz (recommended to specify, otherwise 16kHz is assumed)
     return_probs=False        # bool: Return probabilities
 )
 ```
 
 **Note:** The model operates at 16kHz internally. If you provide audio at a different sample rate, it will be automatically resampled (requires `librosa`). If no sample rate is specified, 16kHz is assumed with a warning.
+
+**Note:** As this is a multimodal (text & audio input) model, you must include the text of the previous and in-progress lines. Vogent Turn is not designed to work on audio (or text) alone.
 
 **Returns:**
 - If `return_probs=False`: `bool` (True = turn complete, False = continue)
