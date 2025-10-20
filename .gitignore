@@ -33,6 +33,10 @@ env.bak/
 venv.bak/
 .venv/
 
+# UV
+uv.lock
+.python-version
+
 # PyInstaller
 *.manifest
 *.spec
