@@ -69,7 +69,7 @@ result = detector.predict(
 )
 
 print(f"Turn complete: {result['is_endpoint']}")
-print(f"Confidence: {result['prob_endpoint']:.1%}")
+print(f"Done speaking probability: {result['prob_endpoint']:.1%}")
 ```
 
 ### CLI Tool
