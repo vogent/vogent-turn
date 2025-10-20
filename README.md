@@ -9,7 +9,7 @@ Technical report can be found [here](https://blog.vogent.ai/posts/voturn-80m-sta
 ## Key Features
 
 - **Multimodal**: Uses both audio (Whisper encoder) and text (SmolLM) for context-aware predictions
-- **Fast**: Optimized with `torch.compile` for low-latency inference
+- **Fast**: Optimized with `torch.compile` for low-latency inference. Runs in ~7ms on an NVIDIA T4, even with batching; fast enough to run live as part of a voice AI stack.
 - **Easy to Use**: Simple Python API with just a few lines of code
 - **Production-Ready**: Batched inference, model caching, and comprehensive error handling
 
