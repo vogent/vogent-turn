@@ -13,8 +13,7 @@ import sys
 def main():
     print("Initializing Turn Detector...")
     detector = TurnDetector(
-        compile_model=True,  # Enable torch.compile for faster inference
-        warmup=True,         # Warmup common shapes
+        compile_model=False,  # Enable torch.compile for faster inference
     )
     
     import urllib.request
