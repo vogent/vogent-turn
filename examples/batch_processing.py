@@ -34,13 +34,13 @@ def main():
     
     audio_sources = [
         {
-            "url": "https://storage.googleapis.com/voturn-sample-recordings/incomplete_number_sample.wav",  # TODO: Replace with actual URL
+            "url": "https://storage.googleapis.com/voturn-sample-recordings/incomplete_number_sample.wav",
             "filename": "incomplete_number_sample.wav",
             "prev_line": "What is your phone number",
             "curr_line": "My number is 804"
         },
         {
-            "url": "https://storage.googleapis.com/voturn-sample-recordings/complete_number_sample.wav",  # TODO: Replace with actual URL
+            "url": "https://storage.googleapis.com/voturn-sample-recordings/complete_number_sample.wav",
             "filename": "complete_number_sample.wav",
             "prev_line": "What is your phone number",
             "curr_line": "My number is 8042221111"
