@@ -4,6 +4,8 @@
 
 Multimodal turn detection that combines audio intonation and text context to accurately determine when a speaker has finished their turn in a conversation.
 
+Technical report can be found [here](https://blog.vogent.ai/posts/voturn-80m-state-of-the-art-turn-detection-for-voice-agents).
+
 ## Key Features
 
 - **Multimodal**: Uses both audio (Whisper encoder) and text (SmolLM) for context-aware predictions
@@ -51,26 +53,29 @@ pip install -e .
 ### Python Library
 
 ```python
-from vogent_turn.inference import TurnDetector
-import numpy as np
-
-# Initialize detector (compiles model on first run - takes ~30s)
-detector = TurnDetector()
-
-# Your audio: mono, float32 in range [-1, 1]. If not 16 kHz, the predict method will resample to 16 kHz.
+from vogent_turn import TurnDetector
 import soundfile as sf
-audio, sr = sf.read("speech.wav")
+import urllib.request
 
-# Detect turn endpoint with conversation context
+# Initialize detector
+detector = TurnDetector(compile_model=True, warmup=True)
+
+# Download and load audio
+audio_url = "https://storage.googleapis.com/voturn-sample-recordings/incomplete_number_sample.wav"
+urllib.request.urlretrieve(audio_url, "sample.wav")
+audio, sr = sf.read("sample.wav")
+
+# Run turn detection with conversational context
 result = detector.predict(
     audio,
-    prev_line="What is your favorite color?",
-    curr_line="I think it's blue",
-    sample_rate=sr
+    prev_line="What is your phone number",
+    curr_line="My number is 804",
+    sample_rate=sr,
+    return_probs=True,
 )
 
-print(result)
-# {'is_endpoint': True, 'prob_endpoint': 0.92, 'prob_continue': 0.08}
+print(f"Turn complete: {result['is_endpoint']}")
+print(f"Confidence: {result['prob_endpoint']:.1%}")
 ```
 
 ### CLI Tool
@@ -78,14 +83,8 @@ print(result)
 ```bash
 # Basic usage (sample rate automatically detected from file)
 vogent-turn-predict speech.wav \
-  --prev "What is your favorite color?" \
-  --curr "I think it's blue"
-
-# Use CPU instead of GPU
-vogent-turn-predict speech.wav \
-  --prev "Hello" \
-  --curr "Hi there" \
-  --device cpu
+  --prev "What is your phone number" \
+  --curr "My number is 804"
 ```
 
 **Note:** Sample rate is automatically detected from the audio file. Audio will be resampled to 16kHz internally if needed.
@@ -118,7 +117,7 @@ result = detector.predict(
     audio,                    # np.ndarray: (n_samples,) mono float32
     prev_line="",             # str: Previous speaker's text (optional)
     curr_line="",             # str: Current speaker's text (optional)
-    sample_rate=None,         # int: Sample rate in Hz (recommended to specify)
+    sample_rate=None,         # int: Sample rate in Hz (recommended to specify, otherwise 16kHz is assumed)
     return_probs=False        # bool: Return probabilities
 )
 ```
@@ -158,27 +157,6 @@ results = detector.predict_batch(
 - **Range**: [-1.0, 1.0]
 - **Duration**: Up to 8 seconds (longer audio will be truncated)
 
-**Example audio loading:**
-
-```python
-import soundfile as sf
-import librosa
-
-# Load and resample
-audio, sr = sf.read("speech.wav")
-if sr != 16000:
-    audio = librosa.resample(audio, orig_sr=sr, target_sr=16000)
-
-# Convert to mono if stereo
-if audio.ndim > 1:
-    audio = audio.mean(axis=1)
-
-# Normalize to [-1, 1] if needed
-audio = audio.astype(np.float32)
-if np.abs(audio).max() > 1.0:
-    audio = audio / np.abs(audio).max()
-```
-
 ### Text Context Format
 
 The model uses conversation context to improve predictions:
@@ -192,7 +170,7 @@ For best performance, do not include terminal punctuation (periods, etc.).
 ```python
 result = detector.predict(
     audio,
-    prev_line="How are you doing today?",
+    prev_line="How are you doing today",
     curr_line="I'm doing great thanks"
 )
 ```
@@ -233,100 +211,10 @@ The model is trained on conversational audio with labeled turn boundaries. It le
 
 ## Examples
 
-### Basic Endpoint Detection
-
-```python
-from vogent_turn.inference import TurnDetector
-import soundfile as sf
-
-detector = TurnDetector()
-audio, sr = sf.read("speech.wav")
-
-# Simple binary decision
-is_endpoint = detector.predict(audio, prev_line="What is your phone number?", curr_line="The number is 2148241616", 
-    sample_rate=sr)
-print(f"Turn complete: {is_endpoint}")
-```
-
-### With Confidence Scores
-
-```python
-result = detector.predict(audio, prev_line="What is your phone number?", curr_line="The number is 2148241616", sample_rate=sr, return_probs=True)
-print(f"Endpoint probability: {result['prob_endpoint']:.2%}")
-print(f"Continue probability: {result['prob_continue']:.2%}")
-
-# Use threshold for decision
-if result['prob_endpoint'] > 0.8:
-    print("High confidence turn endpoint")
-```
-
-### Batch Processing
-
-For efficient batch processing of multiple audio samples, use `predict_batch()`:
-
-```python
-import soundfile as sf
-
-detector = TurnDetector()
-
-# Load multiple audio files
-audio_files = ["recording1.wav", "recording2.wav", "recording3.wav"]
-audio_batch = []
-sample_rates = []
-
-for file in audio_files:
-    audio, sr = sf.read(file)
-    audio_batch.append(audio)
-    sample_rates.append(sr)
-
-# Prepare context for each audio sample
-context_batch = [
-    {"prev_line": "How are you?", "curr_line": "I'm doing great"},
-    {"prev_line": "What's your name?", "curr_line": "My name is"},
-    {"prev_line": "Where are you from?", "curr_line": "I'm from"},
-]
-
-# Process all samples in a single batch (more efficient than looping)
-# Note: All audio must have the same sample rate for batch processing
-results = detector.predict_batch(
-    audio_batch,
-    context_batch=context_batch,
-    sample_rate=sample_rates[0],  # Assumes all audio has same sample rate
-    return_probs=True
-)
-
-# Print results
-for i, result in enumerate(results):
-    print(f"{audio_files[i]}: {result['is_endpoint']} "
-          f"(confidence: {result['prob_endpoint']:.2%})")
-```
----
-## Troubleshooting
-
-### Audio format issues
-
-**Solution:** Ensure audio meets requirements:
-```python
-import soundfile as sf
-import librosa
-import numpy as np
-
-# Load and convert
-audio, sr = sf.read("file.wav")
-
-# Resample to 16kHz
-if sr != 16000:
-    audio = librosa.resample(audio, orig_sr=sr, target_sr=16000)
-
-# Convert to mono
-if audio.ndim > 1:
-    audio = audio.mean(axis=1)
-
-# Ensure float32 and normalized
-audio = audio.astype(np.float32)
-if np.abs(audio).max() > 1.0:
-    audio = audio / np.abs(audio).max()
-```
+Sample scripts can be found in the `examples/` directory. 
+`python3.10 examples/basic_usage.py` downloads an audio file and runs the turn detector. 
+`python3.10 examples/batch_processing.py` downloads two audio files and runs the turn detector with a batched input.
+`request_batcher.py` is a sample implementation of a thread for continuous receiving and batching of requests (e.g. in a production setting).
 
 ---
 ## Development
