@@ -245,7 +245,7 @@ If you use this library in your research, please cite:
 @software{vogent_turn,
   title = {Vogent Turn: Multimodal Turn Detection for Conversational AI},
   author = {Vogent},
-  year = {2024},
+  year = {2025},
   url = {https://github.com/vogent/vogent-turn}
 }
 ```
