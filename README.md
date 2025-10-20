@@ -267,7 +267,6 @@ Inference code is open-source under Apache 2.0. Model weights are under a modifi
 ## Support
 
 - **Issues**: [GitHub Issues](https://github.com/vogent/vogent-turn/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/vogent/vogent-turn/discussions)
 
 ---
 
