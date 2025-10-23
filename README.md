@@ -4,7 +4,10 @@
 
 Multimodal turn detection that combines audio intonation and text context to accurately determine when a speaker has finished their turn in a conversation.
 
-Technical report can be found [here](https://blog.vogent.ai/posts/voturn-80m-state-of-the-art-turn-detection-for-voice-agents).
+[Technical Report](https://blog.vogent.ai/posts/voturn-80m-state-of-the-art-turn-detection-for-voice-agents)
+[Model Weights](http://huggingface.co/vogent/Vogent-Turn-80M)
+[HF Space](https://huggingface.co/spaces/vogent/vogent-turn-demo)
+
 
 ## Key Features
 
