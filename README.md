@@ -25,6 +25,19 @@ The model projects audio embeddings into the LLM's input space and processes the
 
 ## Installation
 
+### Using `pip`
+
+```bash
+pip install vogent-turn
+```
+
+### Using `uv`
+
+```bash
+uv init
+uv add vogent-turn
+```
+
 ### From Source
 
 ```bash
