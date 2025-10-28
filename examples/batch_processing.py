@@ -30,7 +30,7 @@ def download_audio(url, filename):
 
 def main():
     print("Initializing Turn Detector...")
-    detector = TurnDetector()
+    detector = TurnDetector(compile_model=False)
     
     audio_sources = [
         {

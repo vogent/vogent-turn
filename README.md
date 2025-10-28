@@ -14,7 +14,7 @@ Multimodal turn detection that combines audio intonation and text context to acc
 ## Key Features
 
 - **Multimodal**: Uses both audio (Whisper encoder) and text (SmolLM) for context-aware predictions
-- **Fast**: Optimized with `torch.compile` for low-latency inference. Runs in ~7ms on an NVIDIA T4, even with batching; fast enough to run live as part of a voice AI stack.
+- **Fast**: Optimized with `torch.compile` for low-latency inference
 - **Easy to Use**: Simple Python API with just a few lines of code
 - **Production-Ready**: Batched inference, model caching, and comprehensive error handling
 
@@ -43,7 +43,7 @@ uv init
 uv add vogent-turn
 ```
 
-### From Source
+### From Source (Traditional)
 
 ```bash
 git clone https://github.com/vogent/vogent-turn.git
@@ -51,12 +51,23 @@ cd vogent-turn
 pip install -e .
 ```
 
+### From Source (with UV - Recommended for Development)
+
+[UV](https://github.com/astral-sh/uv) is a fast Python package manager. If you have UV installed:
+
+```bash
+git clone https://github.com/vogent/vogent-turn.git
+cd vogent-turn
+
+# Create virtual environment and install
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip install -e .
+```
+
 ### Requirements
 
-- Python >=3.8
-- PyTorch >=2.1.0
-- Transformers >=4.35.0
-- See `requirements.txt` for full list
+- See `pyproject.toml` for full list
 
 ---
 
@@ -87,7 +98,7 @@ result = detector.predict(
 )
 
 print(f"Turn complete: {result['is_endpoint']}")
-print(f"Done speaking probability: {result['prob_endpoint']:.1%}")
+print(f"Confidence: {result['prob_endpoint']:.1%}")
 ```
 
 ### CLI Tool
@@ -127,16 +138,14 @@ Detect if the current speaker has finished their turn.
 ```python
 result = detector.predict(
     audio,                    # np.ndarray: (n_samples,) mono float32
-    prev_line="",             # str: Previous speaker's text (required)
-    curr_line="",             # str: Current speaker's text (required)
+    prev_line="",             # str: Previous speaker's text (optional)
+    curr_line="",             # str: Current speaker's text (optional)
     sample_rate=None,         # int: Sample rate in Hz (recommended to specify, otherwise 16kHz is assumed)
     return_probs=False        # bool: Return probabilities
 )
 ```
 
 **Note:** The model operates at 16kHz internally. If you provide audio at a different sample rate, it will be automatically resampled (requires `librosa`). If no sample rate is specified, 16kHz is assumed with a warning.
-
-**Note:** As this is a multimodal (text & audio input) model, you must include the text of the previous and in-progress lines. Vogent Turn is not designed to work on audio (or text) alone.
 
 **Returns:**
 - If `return_probs=False`: `bool` (True = turn complete, False = continue)
@@ -185,8 +194,7 @@ For best performance, do not include terminal punctuation (periods, etc.).
 result = detector.predict(
     audio,
     prev_line="How are you doing today",
-    curr_line="I'm doing great thanks",
-    sample_rate=16000
+    curr_line="I'm doing great thanks"
 )
 ```
 
@@ -227,8 +235,8 @@ The model is trained on conversational audio with labeled turn boundaries. It le
 ## Examples
 
 Sample scripts can be found in the `examples/` directory. 
-`python examples/basic_usage.py` downloads an audio file and runs the turn detector. 
-`python examples/batch_processing.py` downloads two audio files and runs the turn detector with a batched input.
+`python3 examples/basic_usage.py` downloads an audio file and runs the turn detector. 
+`python3 examples/batch_processing.py` downloads two audio files and runs the turn detector with a batched input.
 `request_batcher.py` is a sample implementation of a thread for continuous receiving and batching of requests (e.g. in a production setting).
 
 ---
@@ -237,14 +245,17 @@ Sample scripts can be found in the `examples/` directory.
 ### Project Structure
 
 ```
-vogent_turn/
-├── __init__.py              # Package exports
-├── inference.py             # Main TurnDetector class
-├── predict.py               # CLI tool
-├── smollm_whisper.py        # Model architecture
-├── whisper.py               # Whisper components
-├── requirements.txt         # Dependencies
-└── setup.py                 # Package configuration
+vogent-turn/                    # Project root
+├── pyproject.toml              # Package configuration and dependencies
+├── vogent_turn/                # Python package
+│   ├── __init__.py             # Package exports
+│   ├── inference.py            # Main TurnDetector class
+│   ├── predict.py              # CLI tool
+│   ├── smollm_whisper.py       # Model architecture
+│   └── whisper.py              # Whisper components
+└── examples/                   # Usage examples
+    ├── basic_usage.py
+    └── batch_processing.py
 ```
 
 ### Contributing
@@ -266,7 +277,7 @@ If you use this library in your research, please cite:
 @software{vogent_turn,
   title = {Vogent Turn: Multimodal Turn Detection for Conversational AI},
   author = {Vogent},
-  year = {2025},
+  year = {2024},
   url = {https://github.com/vogent/vogent-turn}
 }
 ```
